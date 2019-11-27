@@ -11,8 +11,12 @@ def main():
       KeyName= sys.argv[2],
       DryRun=False
       )
-      for key, value in response.items():
-        print (key, value)
+      with open("keyfile.txt", "w") as file:
+          for key, value in response.items():
+              keyfilecontent = key + ": " + value + "\n"
+              file.write(keyfilecontent)
+        # print (key, value)
+     
   if action in 'delete':
       response = client.delete_key_pair(
           KeyName = sys.argv[2]
