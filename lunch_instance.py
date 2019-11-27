@@ -1,6 +1,7 @@
 import logging
 import boto3
 from botocore.exceptions import ClientError
+import base64
 
 
 def create_ec2_instance(image_id, instance_type, keypair_name):
@@ -32,20 +33,23 @@ def create_ec2_instance(image_id, instance_type, keypair_name):
 
 def main():
     """Exercise create_ec2_instance()"""
+    # encode the UserData for initial bootstrap
+    bootstrap = 'wget https://raw.githubusercontent.com/pi-hole/pi-hole/master/automated%20install/basic-install.sh -O /tmp/pi-installer.sh'
 
     # Assign these values before running the program
     image_id = 'ami-0cc0a36f626a4fdf5'
     instance_type = 't2.micro'
     keypair_name = 'pihole'
+    UserData = base64.urlsafe_b64encode(bootstrap.encode("utf-8"))
 
     # Set up logging
     logging.basicConfig(level=logging.DEBUG,
                         format='%(levelname)s: %(asctime)s: %(message)s')
 
     # Provision and launch the EC2 instance
-    instance_info = create_ec2_instance(image_id, instance_type, keypair_name)
+    instance_info = create_ec2_instance(image_id, instance_type, keypair_name, UserData)
     if instance_info is not None:
-        logging.info(f'Launched EC2 Instance {instance_info["InstanceId"]}')
+        logging.info(f'    Launched EC2 Instance {instance_info["InstanceId"]}')
         logging.info(f'    VPC ID: {instance_info["VpcId"]}')
         logging.info(f'    Private IP Address: {instance_info["PrivateIpAddress"]}')
         logging.info(f'    Private IP Address: {instance_info["PublicIpAddress"]}')
