@@ -18,6 +18,9 @@ def main():
           KeyName = sys.argv[2]
       )
       print(response)
+  elif action not in 'create' or 'delete':
+      print(sys.argv[0] + ' ' + 'use create or delete as an option')
+
 
 if __name__=="__main__":
     main()
