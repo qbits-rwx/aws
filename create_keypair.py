@@ -1,12 +1,22 @@
 import boto3
-# create a ssh-key for user benjamin
+import sys
+# create a ssh-key for account benjamin
 
 client = boto3.client('ec2')
 
-response = client.create_key_pair(
-    KeyName='pihole',
-    DryRun=False
-)
+def main():
+  response = client.create_key_pair(
+  KeyName='bar',
+  DryRun=False
+  )
+  for key, value in response.items():
+      print (key, value)
+
+if __name__=="__main__":
+    main()
+
+
+
 
 
 
